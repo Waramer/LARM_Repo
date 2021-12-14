@@ -1,16 +1,20 @@
 #!/usr/bin/env python
 # license removed for brevity
 import rospy
-from std_msgs.msg import String
+from geometry_msgs.msg import Twist
 
 def talker():
-    pub = rospy.Publisher('cmd_vel', String, queue_size=10)
+    pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
     rospy.init_node('talker', anonymous=True)
     rate = rospy.Rate(10) # 10hz
     while not rospy.is_shutdown():
-        velocity = "'[2.0,0.0,0.0]' '[0.0,0.0,2.0]'"
-        rospy.loginfo(velocity)
-        pub.publish(velocity)
+
+        move_cmd = Twist()
+        move_cmd.linear.x = 2.0
+        move_cmd.angular.z = 2.0
+
+        rospy.loginfo(move_cmd)
+        pub.publish(move_cmd)
         rate.sleep()
 
 if __name__ == '__main__':
