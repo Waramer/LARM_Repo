@@ -5,6 +5,7 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
 command = 0
+past_command = 0
 timer = 0
 obstacles= []
 
@@ -15,12 +16,12 @@ def move(data):
     move_cmd = Twist()
     if command == -1 :
         move_cmd.linear.x = 0.0
-        move_cmd.angular.z = -0.5
+        move_cmd.angular.z = -0.7
     elif command == 1 :
         move_cmd.linear.x = 0.0
-        move_cmd.angular.z = 0.5
+        move_cmd.angular.z = 0.7
     else :
-        move_cmd.linear.x = 0.1
+        move_cmd.linear.x = 0.2
         move_cmd.angular.z = 0.0
     rospy.loginfo(str(command) + " : " + str(timer))
     pub.publish(move_cmd)
@@ -52,7 +53,11 @@ def detect_collision(obstacles):
         for obstacle in obstacles : 
             if 0.1 < obstacle[0] and obstacle[0] < 0.6 :
                 if -0.3 < obstacle[1] and obstacle[1] < 0.3 :
-                    decision(obstacles)
+                    if past_command == 0 :
+                        decision(obstacles)
+                    else :
+                        command = past_command
+                        timer = 30
 
 def detect_obstacles(data):
     global obstacles
