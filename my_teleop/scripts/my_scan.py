@@ -21,6 +21,7 @@ def detect_collision(data):
     angle= data.angle_min
     for aDistance in data.ranges :
         if 0.1 < aDistance and aDistance < 2.0 :
+            
             aPoint= [ 
                 math.cos(angle) * aDistance, 
                 math.sin(angle) * aDistance
