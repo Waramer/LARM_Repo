@@ -20,7 +20,7 @@ def move(data):
         move_cmd.linear.x = 0.0
         move_cmd.angular.z = 0.5
     else :
-        move_cmd.linear.x = 0.5
+        move_cmd.linear.x = 0.1
         move_cmd.angular.z = 0.0
     rospy.loginfo(str(command) + " : " + str(timer))
     pub.publish(move_cmd)

@@ -1,0 +1,6 @@
+<launch>
+    <include file="$(find turtlebot_bringup)/launch/minimal.launch"/>
+    <node name="Laser" pkg="urg_node" type="urg_node"></node>
+    <node name="Robot" pkg="grp-marine" type="my_program.py"></node>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-marine)/config/rviz_config_real.rviz"></node>
+</launch>
