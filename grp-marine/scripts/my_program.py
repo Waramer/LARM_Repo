@@ -5,10 +5,10 @@ from sensor_msgs.msg import LaserScan
 from geometry_msgs.msg import Twist
 
 command = 0
-past_command = 0
 timer = 0
-obstacles= []
 
+# move(data) is the function that will publish the commands to move the robot
+# depending on the 'command' variable modified in the other functions 
 def move(data):
     global command
     global timer
@@ -28,6 +28,9 @@ def move(data):
     if timer != 0 :
         timer -= 1
 
+# decision(obstacles) is called when a collision is detected and will 
+# analyse the environnement to choose in with direction it is better to
+# turn to avoid the collision
 def decision(obstacles):
     global command
     global timer
@@ -44,23 +47,23 @@ def decision(obstacles):
         command = 1
     timer = 30
 
+# detect_collision(obstacles) will decide if there is a collision danger 
+# with one of the obstacles detected and will then execute decision
 def detect_collision(obstacles):
     global command
     global timer
-
     if timer == 0 : 
         command = 0
         for obstacle in obstacles : 
             if 0.1 < obstacle[0] and obstacle[0] < 0.6 :
                 if -0.3 < obstacle[1] and obstacle[1] < 0.3 :
-                    if past_command == 0 :
-                        decision(obstacles)
-                    else :
-                        command = past_command
-                        timer = 30
+                    decision(obstacles)
+
+
+# detect_obstacles(data) uses the data provided by the topic from the 
+# laser to create a list of points that are obstacles seen by the laser
 
 def detect_obstacles(data):
-    global obstacles
     obstacles = []
     angle= data.angle_min
     for aDistance in data.ranges :
@@ -73,8 +76,8 @@ def detect_obstacles(data):
         angle+= data.angle_increment
     detect_collision(obstacles)
 
-#rospy.loginfo(str([ [ round(p[0], 2), round(p[1], 2) ] for p in  obstacles[0:10]]) + " ..." )
-
+# main_prog() contains the main structure of the program : 
+# callbacks from laser scans and a regular publishing to move the robot
 def main_prog():
     rospy.init_node('my_program', anonymous=True)
     rospy.Subscriber("scan", LaserScan, detect_obstacles)
@@ -82,5 +85,6 @@ def main_prog():
 
     rospy.spin()
 
+# THe program starts its main here
 if __name__ == '__main__':
     main_prog()
