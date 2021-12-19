@@ -3,6 +3,8 @@ Delezenne Quentin - Duchiron Benjamin
 
 This repository contains all the work of the group in the course LARM.
 
+This project require the installation of the mb6-tbot project that contains packages used in our project. The folder mb6-tbot exists but is empty in this project as it is another git project. Its link : https://bitbucket.org/imt-mobisyst/mb6-tbot.git
+
 # In **master**
 This master branch contains all the work, including the tutorials and the drafts.
 
@@ -18,4 +20,3 @@ To launch the turtlebot, after connecting both the bot and the laser, use the co
 `roslaunch grp-color challenge1_turtlebot.launch`
 
 In both cases, the launch file will run all the code required and will display the Rviz rendering of the laser scan.
-
