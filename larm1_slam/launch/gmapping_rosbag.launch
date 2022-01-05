@@ -1,0 +1,5 @@
+<launch>
+    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/quentin/bagfiles/turtlebot_dia.bag"/>
+    <node name="GMapping" pkg="gmapping" type="slam_gmapping"></node>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find larm1_slam)/config/rviz_config_gmapping.rviz" ></node>
+</launch>

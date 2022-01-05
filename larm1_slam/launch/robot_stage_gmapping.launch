@@ -16,6 +16,6 @@
         <remap from="turtlebot_teleop_keyboard/cmd_vel" to="cmd_vel"/>
     </node>
 
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find larm1_slam)/config/rviz_config.rviz" ></node>
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find larm1_slam)/config/rviz_config_gmapping.rviz" ></node>
 
 </launch>
