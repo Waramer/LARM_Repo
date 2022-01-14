@@ -41,8 +41,8 @@ def detect_bottle(data):
     inst_color = cv_color
 
     hsv=cv2.cvtColor(inst_color,cv2.COLOR_BGR2HSV)
-    color=14
-    lo=np.array([color-3,240,10])
+    color=15
+    lo=np.array([color-3,235,50])
     hi=np.array([color+3,255,255])
     mask=cv2.inRange(hsv,lo,hi)
     mask=cv2.erode(mask, None, iterations=5)

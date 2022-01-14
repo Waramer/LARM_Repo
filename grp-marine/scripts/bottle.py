@@ -17,7 +17,7 @@ class Bottle:
         Bottle.bottleID += 1
 
     def __str__(self):
-        return "Bottle "+str(self.id)+" is "+self.color+" and at coordinates "+str(self.pos)
+        return "Bottle %1d is %s and at coordinates [%2.2f;%2.2f;%2.2f]"%(self.id,self.color,self.pos[0],self.pos[1],self.pos[2])
 
     def sameBottle(self,bottlepos,color):
         distance = math.sqrt(math.pow(self.pos[0]-bottlepos[0],2)+math.pow(self.pos[1]-bottlepos[1],2))

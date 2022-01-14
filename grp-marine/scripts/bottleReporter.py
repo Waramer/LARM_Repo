@@ -36,21 +36,27 @@ def createMarker(pos,color,id):
     marker.scale.z = 0.2
     marker.lifetime = rospy.Time(2.0)
     if color == "orange":
-        marker.color.r = 3
-        marker.color.g = 1
-        marker.color.b = 0
+        marker.color.r = 2.0
+        marker.color.g = 0.7
+        marker.color.b = 0.0
     else :
-        marker.color.r = 0
-        marker.color.g = 0
-        marker.color.b = 0
+        marker.color.r = 0.1
+        marker.color.g = 0.1
+        marker.color.b = 0.1
     marker.color.a = 1.0
 
     pub.publish(marker)
 
+def printBottles():
+    if len(bottles)>0:
+        print("")
+        for bottle in bottles:
+            print(bottle)
+
 def updateMap(data):
     for bottle in bottles:
         createMarker(bottle.pos,bottle.color,bottle.id)
-        print(bottle)
+    printBottles()
 
 def updateOrangeBottles(data):
     global bottles
