@@ -1,7 +1,7 @@
 <launch>
 
 
-<node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/benjamin/bagfiles/challenge-2.bag"/>
+<node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/quentin/bagfiles/challenge-2.bag"/>
 
 <node pkg="grp-marine" name="harr_normal" type= "harr_normal.py">
 </node>

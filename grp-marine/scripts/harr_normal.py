@@ -6,12 +6,15 @@ from std_msgs.msg import String
 from cv_bridge import CvBridge
 from sensor_msgs.msg import Image
 from geometry_msgs.msg import PoseStamped
+import rospkg
 
 
+def get_pkg_path():
+    rospack = rospkg.RosPack()
+    return rospack.get_path('grp-marine')
+my_pkg = get_pkg_path()
 
-
-
-object_cascade=cv2.CascadeClassifier("../src/classifier/cascade.xml")  
+object_cascade=cv2.CascadeClassifier(my_pkg+"/src/classifier/cascade.xml")  
 bridge = CvBridge()
 def rs_color(data):
     
