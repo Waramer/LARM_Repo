@@ -13,7 +13,6 @@ my_pkg = get_pkg_path()
 sys.path.append(my_pkg)
 from scripts import bottle as bt
 
-# global variables
 pub = 0
 bottles = []
 
@@ -68,6 +67,16 @@ def updateOrangeBottles(data):
     newBottle = bt.Bottle(uncertainBottlePos,"orange")
     bottles.append(newBottle)
 
+def updateBlackBottles(data):
+    global bottles
+    uncertainBottlePos = [data.pose.position.x,data.pose.position.y,0.1]
+    for bottle in bottles:
+        if bottle.sameBottle(uncertainBottlePos,"black"):
+            bottle.addReportAndUpdate(uncertainBottlePos)
+            return False
+    newBottle = bt.Bottle(uncertainBottlePos,"black")
+    bottles.append(newBottle)
+
 def main_prog():
     global bottles
     bottles = []
@@ -75,6 +84,7 @@ def main_prog():
     global pub
     pub = rospy.Publisher('bottle', Marker, queue_size=10)
     rospy.Subscriber('bottle_orange',PoseStamped,updateOrangeBottles)
+    rospy.Subscriber('bottle_black',PoseStamped,updateBlackBottles)
     rospy.Timer(rospy.Duration(0.05), updateMap)
     rospy.spin()
 

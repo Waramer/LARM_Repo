@@ -1,7 +1,4 @@
 <launch>
-
-    <node pkg="rosbag" type="play" name="player" output="screen" args="--clock /home/quentin/bagfiles/challenge-2.bag"/>
-    
     <param name="/use_sim_time" value="true" />
 
     <node name="GMapping" pkg="gmapping" type="slam_gmapping">
@@ -13,8 +10,9 @@
         <param name="map_update_interval" value="1.0"/>
     </node>
 
-    <node name="BottleReporter" pkg="grp-marine" type="bottleReporter.py"></node>
     <node name="BottleOrangeObserver" pkg="grp-marine" type="bottleOrangeObserver.py"></node>
+    <node name="BottleBlackObserver" pkg="grp-marine" type="harr_normal.py"></node>
+    <node name="BottleReporter" pkg="grp-marine" type="bottleReporter.py"></node>
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-marine)/config/challenge2.rviz" ></node>
 

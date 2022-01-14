@@ -26,7 +26,7 @@ def rs_color(data):
 def createBottlePose(x,y,z):
     pose = PoseStamped()
     pose.header.frame_id = "base_footprint"
-    pose.header.stamp = rospy.Time.now()
+    pose.header.stamp = rospy.Time()
     pose.pose.position.x = x
     pose.pose.position.y = y
     pose.pose.position.z = z
@@ -52,18 +52,15 @@ def detect_bottle(data):
     for elt in elements:
         ((x,y),radius) = cv2.minEnclosingCircle(elt)
         depth = inst_depth[int(y)][int(x)] + 150
-        # cv2.circle(inst_color,(int(x),int(y)),int(radius),(255,0,0),2)
         width = np.shape(inst_color)[0]
         angle = (math.radians(39.5)/width)*(width/2 + (width/2-x))
         if abs(angle)<15 and depth<1500 and depth > 200 :
             x = depth/1000*math.cos(angle)
             y = depth/1000*math.sin(angle)
             bottle = createBottlePose(x,y,0.1)
-            tfListener.waitForTransform("/base_footprint","/map",rospy.Time.now(),rospy.Duration(0.1))
+            tfListener.waitForTransform("/base_footprint","/map",rospy.Time(),rospy.Duration(0.05))
             bottleInMap = tfListener.transformPose("map",bottle)
             pub.publish(bottleInMap)
-    # cv2.imshow("DETECT",inst_color)
-    # cv2.waitKey(1)
 
 def main_prog():
     rospy.init_node('CameraObserver', anonymous=True)
