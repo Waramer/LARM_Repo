@@ -51,7 +51,7 @@ def detect_bottle(data):
     elements = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     for elt in elements:
         ((x,y),radius) = cv2.minEnclosingCircle(elt)
-        depth = inst_depth[int(y)][int(x)] + 100
+        depth = inst_depth[int(y)][int(x)] + 150
         # cv2.circle(inst_color,(int(x),int(y)),int(radius),(255,0,0),2)
         width = np.shape(inst_color)[0]
         angle = (math.radians(39.5)/width)*(width/2 + (width/2-x))
@@ -73,7 +73,7 @@ def main_prog():
 
     rospy.Subscriber("camera/aligned_depth_to_color/image_raw", Image, rs_depth)
     rospy.Subscriber("camera/color/image_raw",Image,rs_color)
-    rospy.Timer(rospy.Duration(0.2), detect_bottle)
+    rospy.Timer(rospy.Duration(0.3), detect_bottle)
 
     global pub
     pub = rospy.Publisher('bottle_orange', PoseStamped, queue_size=10)

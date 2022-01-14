@@ -1,32 +1,30 @@
 #!/usr/bin/env python3
-import sys
-from os import stat,getcwd
-
-from numpy.lib.function_base import append
 import rospy
-from random import randint
 from visualization_msgs.msg import Marker
 from geometry_msgs.msg import PoseStamped
-from std_msgs.msg import String
-import tf
-# from bottle import Bottle
+import numpy as np
+import rospkg
+import sys
+
+def get_pkg_path():
+    rospack = rospkg.RosPack()
+    return rospack.get_path('grp-marine')
+my_pkg = get_pkg_path()
+sys.path.append(my_pkg)
+from scripts import bottle as bt
 
 # global variables
 pub = 0
-marker_id = 1
-bottlesTemp = []
 bottles = []
 
-def createMarker(x,y,z,color):
+def createMarker(pos,color,id):
     marker = Marker()
-    global marker_id
-    marker.id = marker_id
-    marker_id += 1
+    marker.id = id
     marker.header.frame_id = "map"
     marker.header.stamp = rospy.Time.now()
-    marker.pose.position.x = x
-    marker.pose.position.y = y
-    marker.pose.position.z = z
+    marker.pose.position.x = pos[0]
+    marker.pose.position.y = pos[1]
+    marker.pose.position.z = pos[2]
     marker.pose.orientation.x = 0.0
     marker.pose.orientation.y = 0.0
     marker.pose.orientation.z = 0.0
@@ -37,29 +35,41 @@ def createMarker(x,y,z,color):
     marker.scale.y = 0.1
     marker.scale.z = 0.2
     marker.lifetime = rospy.Time(2.0)
-    marker.color.r = color[0]
-    marker.color.g = color[1]
-    marker.color.b = color[2]
+    if color == "orange":
+        marker.color.r = 3
+        marker.color.g = 1
+        marker.color.b = 0
+    else :
+        marker.color.r = 0
+        marker.color.g = 0
+        marker.color.b = 0
     marker.color.a = 1.0
 
     pub.publish(marker)
 
-def addToTemp(data):
-    bottles.append([data.pose.position.x,data.pose.position.y,data.pose.position.z,(3,1,0)])
-
-def updateBottles(data):
+def updateMap(data):
     for bottle in bottles:
-        reportOnMap(bottle)
+        createMarker(bottle.pos,bottle.color,bottle.id)
+        print(bottle)
 
-def reportOnMap(bottle):
-    createMarker(bottle[0],bottle[1],bottle[2],bottle[3])
+def updateOrangeBottles(data):
+    global bottles
+    uncertainBottlePos = [data.pose.position.x,data.pose.position.y,0.1]
+    for bottle in bottles:
+        if bottle.sameBottle(uncertainBottlePos,"orange"):
+            bottle.addReportAndUpdate(uncertainBottlePos)
+            return False
+    newBottle = bt.Bottle(uncertainBottlePos,"orange")
+    bottles.append(newBottle)
 
 def main_prog():
-    rospy.init_node('Bottle_Seeker', anonymous=True)
+    global bottles
+    bottles = []
+    rospy.init_node('Bottle_Reporter', anonymous=True)
     global pub
     pub = rospy.Publisher('bottle', Marker, queue_size=10)
-    rospy.Subscriber('bottle_orange',PoseStamped,addToTemp)
-    rospy.Timer(rospy.Duration(0.5),updateBottles)
+    rospy.Subscriber('bottle_orange',PoseStamped,updateOrangeBottles)
+    rospy.Timer(rospy.Duration(0.05), updateMap)
     rospy.spin()
 
 if __name__ == '__main__':
