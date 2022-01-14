@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 from os import stat
 import rospy
-from random import Random, randint
-from rospy import rostime
+from random import randint
 from std_msgs.msg import String
 from visualization_msgs.msg import Marker
-from geometry_msgs.msg import PoseStamped
+from std_msgs.msg import String
 import tf
 
 # Initialize a global variable
@@ -58,7 +57,7 @@ def locateInMap(data):
 
     print(marker)
     pub.publish(marker)
-    #rospy.loginfo("Merker sent")
+    rospy.loginfo("Merker sent")
 
 def main_prog():
     rospy.init_node('Bottle_Seeker', anonymous=True)
