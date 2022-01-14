@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-from numpy.core.fromnumeric import shape
 import rospy
 import numpy as np
 import math
@@ -13,6 +12,7 @@ bridge = CvBridge()
 cv_depth = []
 cv_color = []
 pub = 0
+detect = 0
 tfListener = 0
 
 def rs_depth(data):
@@ -51,6 +51,8 @@ def detect_bottle(data):
     elements = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)[-2]
     for elt in elements:
         ((x,y),radius) = cv2.minEnclosingCircle(elt)
+        cv2.circle(inst_color,(int(x),int(y)),int(radius),(255,0,0),4)
+
         depth = inst_depth[int(y)][int(x)] + 150
         width = np.shape(inst_color)[0]
         angle = (math.radians(39.5)/width)*(width/2 + (width/2-x))
@@ -58,9 +60,11 @@ def detect_bottle(data):
             x = depth/1000*math.cos(angle)
             y = depth/1000*math.sin(angle)
             bottle = createBottlePose(x,y,0.1)
-            tfListener.waitForTransform("/base_footprint","/map",rospy.Time(),rospy.Duration(0.05))
+            # tfListener.waitForTransform("/base_footprint","/map",rospy.Time(),rospy.Duration(0.05))
             bottleInMap = tfListener.transformPose("map",bottle)
             pub.publish(bottleInMap)
+            
+    detect.publish(bridge.cv2_to_imgmsg(inst_color,"passthrough"))
 
 def main_prog():
     rospy.init_node('CameraObserver', anonymous=True)
@@ -74,6 +78,8 @@ def main_prog():
 
     global pub
     pub = rospy.Publisher('bottle_orange', PoseStamped, queue_size=10)
+    global detect
+    detect = rospy.Publisher('detect_orange', Image, queue_size=10)
 
     rospy.spin()
 
