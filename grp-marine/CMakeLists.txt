@@ -162,6 +162,7 @@ include_directories(
 catkin_install_python(PROGRAMS
   scripts/bottleReporter.py
   scripts/bottleOrangeObserver.py
+  scripts/harr_normal.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
