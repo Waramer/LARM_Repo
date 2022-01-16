@@ -47,8 +47,8 @@ def detect_bottle(data):
     inst_color = cv_color
 
     v_incr = 0
-    v_scale = 1.6
-    v_neigh = 20
+    v_scale = 1.65
+    v_neigh = 28
         
     image=cv2.cvtColor(inst_color, cv2.COLOR_BGR2GRAY)
     object=object_cascade.detectMultiScale(image, scaleFactor=v_scale  , minNeighbors=v_neigh)
