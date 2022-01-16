@@ -19,14 +19,21 @@ cv_dolor = []
 pub = 0
 detect = 0
 tfListener = 0
+startAnalyse = 0
 
 def rs_color(data):
     global cv_color
     cv_color = np.array(bridge.imgmsg_to_cv2(data,'bgr8'))
+    global startAnalyse
+    if startAnalyse == 0:
+        startAnalyse = 1
 
 def rs_depth(data):
     global cv_depth
     cv_depth = np.array(bridge.imgmsg_to_cv2(data,desired_encoding="passthrough"))
+    global startAnalyse
+    if startAnalyse == 1:
+        startAnalyse = 2
 
 def createBottlePose(x,y,z):
     pose = PoseStamped()
@@ -42,6 +49,9 @@ def createBottlePose(x,y,z):
     return pose
 
 def detect_bottle(data):
+
+    if startAnalyse != 2:
+        return False
     
     inst_depth = cv_depth
     inst_color = cv_color
