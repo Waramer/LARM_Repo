@@ -6,16 +6,25 @@ This repository contains all the work of the group in the course LARM.
 # In **master**
 This master branch contains all the work, including the tutorials and the drafts.
 
-# In **challenge1**
-This branch contains the work done to achieve the first challenge, and the needed code to make is run (the mb6-tbot package is included).  
-The behavior coded will observe the obstacles and decide to stop and turn for a prolonged period of time to take another direction. It will decide the direction of the turn by choosing the way where it sees the less obstacles.  
-The whole program is based on a single node. It is subscribed to the data from the laser scan, and publishes to the commands of the robot.
+# In **challenge2**
+This branch contains the work done to achieve the second challenge.  
+The behavior coded will observe the environement and try to identify both orange and black bottles using two different methods.
+Orange bottles are detected using HSV filter and contours research. A stream of the scans are displayed in `detect_orange` with blue circles.
+Orange bottles are detected using Harr learning detection. A stream of the scans are displayed in `detect_black` with blue rectangles.
+Rviz will be launched automatically and will display :
+- The pose of the tbot with a red arrow
+- The gmapping Map
+- The `detect_orange` stream in the bottom right
+- The `detect_black` stream in the bottom right
 
-To launch the simulation in Gazebo with the given situation, use the command :  
-`roslaunch grp-color challenge1_simulation.launch`
+The Harr detection is not 100% accurate and the choice have been made to make it more strict to avoid noise. It allows us to avoid many false results, but it also prevent us of detectingall the black bottles. A consequence is the lack of detection in case of bottle laying on the side.
 
-To launch the turtlebot, after connecting both the bot and the laser, use the command :  
-`roslaunch grp-color challenge1_turtlebot.launch`
+Overview of a result :  
+![Overview](https://github.com/Waramer/LARM_Repo/tree/challenge2/Overview.png)
 
-In both cases, the launch file will run all the code required and will display the Rviz rendering of the laser scan.
 
+To launch the code with the minimal code (orange bottle only), run :
+`roslaunch grp-marine challenge2.launch`
+
+To launch the code with all the nodes (both detections), run :
+`roslaunch grp-color challenge12prime.launch`

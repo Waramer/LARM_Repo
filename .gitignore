@@ -1,2 +1,4 @@
 __pycache__/
+grp-marine/scripts/cifar-10-python/
 *.log
+*.swp

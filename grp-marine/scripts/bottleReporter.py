@@ -13,7 +13,6 @@ my_pkg = get_pkg_path()
 sys.path.append(my_pkg)
 from scripts import bottle as bt
 
-# global variables
 pub = 0
 bottles = []
 
@@ -34,7 +33,7 @@ def createMarker(pos,color,id):
     marker.scale.x = 0.1
     marker.scale.y = 0.1
     marker.scale.z = 0.2
-    marker.lifetime = rospy.Time(2.0)
+    marker.lifetime = rospy.Time(0)
     if color == "orange":
         marker.color.r = 2.0
         marker.color.g = 0.7
@@ -53,7 +52,7 @@ def printBottles():
         for bottle in bottles:
             print(bottle)
 
-def updateMap(data):
+def updateMap():
     for bottle in bottles:
         createMarker(bottle.pos,bottle.color,bottle.id)
     printBottles()
@@ -64,9 +63,25 @@ def updateOrangeBottles(data):
     for bottle in bottles:
         if bottle.sameBottle(uncertainBottlePos,"orange"):
             bottle.addReportAndUpdate(uncertainBottlePos)
+            updateMap()
             return False
     newBottle = bt.Bottle(uncertainBottlePos,"orange")
     bottles.append(newBottle)
+    updateMap()
+    return True
+
+def updateBlackBottles(data):
+    global bottles
+    uncertainBottlePos = [data.pose.position.x,data.pose.position.y,0.1]
+    for bottle in bottles:
+        if bottle.sameBottle(uncertainBottlePos,"black"):
+            bottle.addReportAndUpdate(uncertainBottlePos)
+            updateMap()
+            return False
+    newBottle = bt.Bottle(uncertainBottlePos,"black")
+    bottles.append(newBottle)
+    updateMap()
+    return True
 
 def main_prog():
     global bottles
@@ -75,7 +90,7 @@ def main_prog():
     global pub
     pub = rospy.Publisher('bottle', Marker, queue_size=10)
     rospy.Subscriber('bottle_orange',PoseStamped,updateOrangeBottles)
-    rospy.Timer(rospy.Duration(0.05), updateMap)
+    rospy.Subscriber('bottle_black',PoseStamped,updateBlackBottles)
     rospy.spin()
 
 if __name__ == '__main__':
