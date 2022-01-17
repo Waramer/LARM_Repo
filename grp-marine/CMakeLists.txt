@@ -163,6 +163,8 @@ catkin_install_python(PROGRAMS
   scripts/bottleReporter.py
   scripts/bottleOrangeObserver.py
   scripts/harr_normal.py
+  scripts/driver.py
+  scripts/navigator.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
