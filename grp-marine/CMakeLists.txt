@@ -165,6 +165,7 @@ catkin_install_python(PROGRAMS
   scripts/harr_normal.py
   scripts/driver.py
   scripts/navigator.py
+  scripts/collisionAvoider.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
