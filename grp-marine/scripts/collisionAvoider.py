@@ -53,52 +53,37 @@ def analyse(obstacles):
     for obstacle in obstacles:
         
         nb += 1
-        if zone_coll(obstacle,0.2,1.0):  # si obstacles dans le couloir
+        if zone_coll(obstacle,0.3,1.0):  # si obstacles dans le couloir
             if obstacle[2] < min_rng_coll :
                 min_rng_coll = obstacle[2]
-        if zone_coll(obstacle,0.3,0.5):
+        if zone_coll(obstacle,0.5,0.5): # si obstacle en entourage proche
             if obstacle[2] < min_rng_prox:
                 min_rng_prox = obstacle[2]
-        if zone_coll(obstacle,0.3,0.7) :
+        if zone_coll(obstacle,0.4,1.0) :
             nb_2 += 1
             if obstacle[1]>0 :
                 lat_sit -= (1-obstacle[2])*(1-obstacle[1])
             else :
                 lat_sit -= (1-obstacle[2])*(obstacle[1]-1)
-         
-        if str(move_command.linear.x)==0.0 and str(move_command.angular.z) ==0.0:
-        
-            min_rng_coll = -3 
        
     if nb_2 != 0 :
         lat_sit /= nb_2
-
     
-           
-    #rospy.loginfo(lat_sit)
     return lat_sit,min_rng_prox,min_rng_coll
 
-
-
-   
-
 def avoid_collision(obstacles):
-    move(0.3)
     lat_sit,min_r_p,min_r_c= analyse(obstacles)
+
     if math.fabs(lat_sit) > 1.0 :
         turn(lat_sit/math.fabs(lat_sit))
     elif math.fabs(lat_sit) > 0.01 :
         turn(2*lat_sit)
     else :
-        turn(0) 
-
-    if min_r_c < 0.5 :
+        turn(0)
+    if min_r_c < 0.3:
         stop()
-    elif min_r_c ==-3 :
-        move(-1)
-    else :
+    else:
         move(0.3*min_r_c)
-
 
     transmit()
 
@@ -106,7 +91,6 @@ def transmit():
     global move_command
     pub = rospy.Publisher('cas_cmd', Twist, queue_size=10)
     pub.publish(move_command)
-    rospy.loginfo(str(move_command.linear.x)+" : "+str(move_command.angular.z))
 
 def main_prog():
     rospy.init_node('Driver', anonymous=True)

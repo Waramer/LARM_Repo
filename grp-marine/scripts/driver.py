@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
+import dis
 from os import stat
 import rospy
 import math
 from geometry_msgs.msg import Twist
+from std_msgs.msg import Float32
 
 state = Twist()
 move_command = Twist()
 new_command =Twist()
 new_command.linear.x = 0.0
 new_command.angular.z = 0.0
+dist_goal = 0
 lin_rate = 0.05
 ang_rate = 0.07
 decision = False
@@ -32,6 +35,9 @@ def updatecas(data):
     else :
         decision = False
 
+def updateDist(data):
+    global dist_goal
+    dist_goal = data.data
 
 def move(data):
     global state
@@ -40,11 +46,12 @@ def move(data):
     global ang_rate
     global new_command
     global decision
-    if decision==True:
-        print("lol")
+    if decision==True and dist_goal>0.3: 
+        rospy.loginfo("CAS")
         state.linear.x = accel(state.linear.x,lin_rate,new_command.linear.x)
         state.angular.z = accel(state.angular.z,ang_rate,new_command.angular.z)
     else:
+        rospy.loginfo("NAV")
         state.linear.x = accel(state.linear.x,lin_rate,move_command.linear.x)
         state.angular.z = accel(state.angular.z,ang_rate,move_command.angular.z)
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
@@ -56,6 +63,7 @@ def main_prog():
     rospy.init_node('Driver', anonymous=True)
     rospy.Subscriber("nav_cmd", Twist, updatenav)
     rospy.Subscriber("cas_cmd", Twist, updatecas)
+    rospy.Subscriber("dist_goal", Float32, updateDist)
     rospy.Timer(rospy.Duration(0.05), move)
     rospy.spin()
 
