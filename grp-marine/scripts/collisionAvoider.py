@@ -53,7 +53,7 @@ def analyse(obstacles):
     for obstacle in obstacles:
         
         nb += 1
-        if zone_coll(obstacle,0.3,1.0):  # si obstacles dans le couloir
+        if zone_coll(obstacle,0.2,1.5):  # si obstacles dans le couloir
             if obstacle[2] < min_rng_coll :
                 min_rng_coll = obstacle[2]
         if zone_coll(obstacle,0.5,0.5): # si obstacle en entourage proche
@@ -75,15 +75,15 @@ def avoid_collision(obstacles):
     lat_sit,min_r_p,min_r_c= analyse(obstacles)
 
     if math.fabs(lat_sit) > 1.0 :
-        turn(lat_sit/math.fabs(lat_sit))
+        turn(lat_sit/(2*math.fabs(lat_sit)))
     elif math.fabs(lat_sit) > 0.01 :
-        turn(2*lat_sit)
+        turn(1.2*lat_sit)
     else :
         turn(0)
     if min_r_c < 0.3:
         stop()
     else:
-        move(0.3*min_r_c)
+        move(0.2*min_r_c)
 
     transmit()
 
@@ -94,7 +94,7 @@ def transmit():
 
 def main_prog():
     rospy.init_node('Driver', anonymous=True)
-    rospy.Subscriber("base_scan", LaserScan, observe)
+    rospy.Subscriber("scan", LaserScan, observe)
     rospy.spin()
 
 if __name__ == '__main__':

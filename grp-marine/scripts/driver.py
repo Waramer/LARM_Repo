@@ -5,6 +5,7 @@ import rospy
 import math
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float32
+from sensor_msgs.msg import LaserScan
 
 state = Twist()
 move_command = Twist()
@@ -54,7 +55,7 @@ def move(data):
         rospy.loginfo("NAV")
         state.linear.x = accel(state.linear.x,lin_rate,move_command.linear.x)
         state.angular.z = accel(state.angular.z,ang_rate,move_command.angular.z)
-    pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    pub = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
     pub.publish(state)
 
 

@@ -1,0 +1,31 @@
+<launch>
+
+    <include file="$(find tbot_bringup)/launch/start.launch"/>
+    <!-- <param name="/use_sim_time" value="true" /> -->
+    <!--<remap from="scan" to="Laser_scan"/>-->
+   <node name="Laser" pkg="urg_node" type="urg_node"></node>
+
+    <node pkg="tf" type="static_transform_publisher" name="lasertf"
+  args="0.0 0.15 0.0 0.0 0.0 1.0 /base_footprint /laser 80" />
+
+    <node name="GMapping" pkg="gmapping" type="slam_gmapping">
+        <param name="xmin" value="-5.0"/>
+        <param name="ymin" value="-5.0"/>
+        <param name="xmax" value="5.0"/>
+        <param name="ymax" value="5.0"/>
+        <param name="maxUrange" value="5.0"/>
+        <param name="map_update_interval" value="1.0"/>-->
+        <param name="scan" value="scan"/>
+    </node>
+
+    <!--<node name="Driver" pkg="grp-marine" type="driver.py" output="screen"></node>
+    <node name="Evitement" pkg="grp-marine" type="collisionAvoider.py" output ="screen"></node>
+    <node name="Navigateur" pkg="grp-marine" type="navigator.py" output="screen"></node>-->
+
+    <!-- <node name="BottleOrangeObserver" pkg="grp-marine" type="bottleOrangeObserver.py"></node> -->
+    <!-- <node name="BottleBlackObserver" pkg="grp-marine" type="harr_normal.py"></node> -->
+    <!-- <node name="BottleReporter" pkg="grp-marine" type="bottleReporter.py"></node> --> 
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-marine)/config/challenge3.rviz" ></node>
+
+</launch>
