@@ -39,7 +39,7 @@ def turn(vel):
 
 def zone_coll(point,lat,lon):
     if -lat<point[1] and point[1]<lat :
-        if point[0] >0 and point[2]<lon :
+        if point[0] > 0.05 and point[2]<lon :
             return True
     return False
 

@@ -16,6 +16,7 @@ dist_goal = 0
 lin_rate = 0.05
 ang_rate = 0.07
 decision = False
+pub = 0
 
 def accel(vel,rate,cmd):
     if math.fabs(cmd-vel) < 0.01 :
@@ -55,7 +56,8 @@ def move(data):
         rospy.loginfo("NAV")
         state.linear.x = accel(state.linear.x,lin_rate,move_command.linear.x)
         state.angular.z = accel(state.angular.z,ang_rate,move_command.angular.z)
-    pub = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
+        
+    global pub
     pub.publish(state)
 
 
@@ -65,6 +67,8 @@ def main_prog():
     rospy.Subscriber("nav_cmd", Twist, updatenav)
     rospy.Subscriber("cas_cmd", Twist, updatecas)
     rospy.Subscriber("dist_goal", Float32, updateDist)
+    global pub
+    pub = rospy.Publisher('cmd_vel_mux/input/navi', Twist, queue_size=10)
     rospy.Timer(rospy.Duration(0.05), move)
     rospy.spin()
 
