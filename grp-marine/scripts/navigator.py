@@ -7,23 +7,29 @@ from nav_msgs.msg import OccupancyGrid
 from nav_msgs.msg import Odometry
 from std_msgs.msg import Float32
 import numpy as np
-import cv2
+import sys
 import rospkg
+
+def get_pkg_path():
+    rospack = rospkg.RosPack()
+    return rospack.get_path('grp-marine')
+my_pkg = get_pkg_path()
+sys.path.append(my_pkg)
+from scripts.navplan import *
 
 pos = [0,0]
 hdg = 0
 goal = [0,0]
 map = []
+map_origin = []
 nav_cmd = Twist()
 ang_vel = 0.7
 lin_vel = 0.4
 dist_secu = 2.0
 pub_cmd = 0
 pub_goal = 0
-
-def get_pkg_path():
-    rospack = rospkg.RosPack()
-    return rospack.get_path('grp-marine')
+navPlanner = NavigationPlanner()
+navPlan = []
 
 def quaternion_to_euler(x, y, z, w):
     ysqr = y * y
@@ -42,6 +48,8 @@ def quaternion_to_euler(x, y, z, w):
 def updateMap(data):
     width = data.info.width
     height = data.info.height
+    global map_origin
+    map_origin = [ data.info.origin.position.x , data.info.origin.position.y ]
     global map
     map = np.zeros((height,width,3))
     for k in range(0,width*height):
@@ -53,11 +61,6 @@ def updateMap(data):
             map[-1-i][j] = [1,1,1]
         elif data.data[k] == 100:
             map[-1-i][j] = [0,0,0]
-
-    cv2.imshow("MAP",map)
-    file = get_pkg_path()+"src/scripts/map.png"
-    cv2.imwrite(file,map)
-    cv2.waitKey(1)
 
 def updatePos(data):
     global pos
@@ -73,40 +76,65 @@ def updateGoal(data):
     goal[0]=data.pose.position.x
     goal[1]=data.pose.position.y
 
+    findNavCourse()
+
+def updatePlanner():
+    mapGoal = [ int((goal[0]-map_origin[0])/0.05) , int((goal[1]-map_origin[1])/0.05) ]
+    navPlanner.updateGoal(mapGoal)
+
+    mapStart = [ int((pos[0]-map_origin[0])/0.05) , int((pos[1]-map_origin[1])/0.05) ]
+    navPlanner.updateStart(mapStart)
+
+    navPlanner.updateMap(map)
+
+def findNavCourse():
+    print("Searching Navigation Plan")
+    navPlanFound = navPlanner.aStar(3)
+    if navPlanFound == False :
+        global navPlan
+        navPlan = []
+        for node in navPlanFound:
+            waypoint_x = map_origin[0] + node.pos[0]*0.05
+            waypoint_y = map_origin[1] + node.pos[1]*0.05
+            navPlan.insert(0,[waypoint_x,waypoint_y])
+        print(navPlan)
+
 def sendNavCommand(data):
-    toGoal,goal_hdg,goal_rng = [goal[0]-pos[0],goal[1]-pos[1]],hdg,0
-
-    if toGoal[0]!=0 and toGoal[1]!=0:
-        goal_rng = math.dist([0,0],toGoal)
-        goal_hdg = math.atan(toGoal[1]/toGoal[0]) * 180 / math.pi
-        if toGoal[0]>0:
-            if toGoal[1]<0:
-                goal_hdg += 360
-        else:
-            goal_hdg += 180
     
-    dist_goal = Float32()
-    dist_goal.data = goal_rng
-    pub_goal.publish(dist_goal)
+    pass
+    # toGoal,goal_hdg,goal_rng = [goal[0]-pos[0],goal[1]-pos[1]],hdg,0
 
-    global nav_cmd
-    # Angular command
-    dhdg = (360+goal_hdg-hdg)%360
-    if goal_rng < 0.3:
-        nav_cmd.angular.z = 0
-    elif dhdg < 180:
-        nav_cmd.angular.z = max(dhdg/180*ang_vel,0.1)
-    else:
-        nav_cmd.angular.z = -max((360-dhdg)/180*ang_vel,0.1)
-    # Linear command
-    if goal_rng > 0.3 and (dhdg < 15 or dhdg > 345):
-        nav_cmd.linear.x = np.min([goal_rng,dist_secu])/dist_secu*lin_vel
-    elif goal_rng < 0.2 :
-        nav_cmd.linear.x = 0
-    else :
-        nav_cmd.linear.x = 0.1
+    # if toGoal[0]!=0 and toGoal[1]!=0:
+    #     goal_rng = math.dist([0,0],toGoal)
+    #     goal_hdg = math.atan(toGoal[1]/toGoal[0]) * 180 / math.pi
+    #     if toGoal[0]>0:
+    #         if toGoal[1]<0:
+    #             goal_hdg += 360
+    #     else:
+    #         goal_hdg += 180
+    
+    # dist_goal = Float32()
+    # dist_goal.data = goal_rng
+    # pub_goal.publish(dist_goal)
 
-    pub_cmd.publish(nav_cmd)
+    # global nav_cmd
+    # # Angular command
+    # dhdg = (360+goal_hdg-hdg)%360
+    # if goal_rng < 0.3:
+    #     nav_cmd.angular.z = 0
+    # elif dhdg < 180:
+    #     nav_cmd.angular.z = max(dhdg/180*ang_vel,0.1)
+    # else:
+    #     nav_cmd.angular.z = -max((360-dhdg)/180*ang_vel,0.1)
+    # # Linear command
+    # if goal_rng > 0.3 and (dhdg < 15 or dhdg > 345):
+    #     nav_cmd.linear.x = np.min([goal_rng,dist_secu])/dist_secu*lin_vel
+    # elif goal_rng < 0.2 :
+    #     nav_cmd.linear.x = 0
+    # else :
+    #     nav_cmd.linear.x = 0.1
+
+    # pub_cmd.publish(nav_cmd)
 
 def main_prog():
     rospy.init_node('Driver', anonymous=True)
@@ -119,6 +147,7 @@ def main_prog():
     pub_cmd = rospy.Publisher("nav_cmd",Twist,queue_size=10)
     global pub_goal
     pub_goal = rospy.Publisher("dist_goal",Float32,queue_size=10)
+
     rospy.Timer(rospy.Duration(0.1), sendNavCommand)
     rospy.spin()
 

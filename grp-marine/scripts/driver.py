@@ -47,11 +47,9 @@ def move(data):
     global new_command
     global decision
     if decision==True and dist_goal>0.3: 
-        rospy.loginfo("CAS")
         state.linear.x = accel(state.linear.x,lin_rate,new_command.linear.x)
         state.angular.z = accel(state.angular.z,ang_rate,new_command.angular.z)
     else:
-        rospy.loginfo("NAV")
         state.linear.x = accel(state.linear.x,lin_rate,move_command.linear.x)
         state.angular.z = accel(state.angular.z,ang_rate,move_command.angular.z)
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
