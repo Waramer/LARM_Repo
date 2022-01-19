@@ -93,7 +93,7 @@ def transmit():
     pub.publish(move_command)
 
 def main_prog():
-    rospy.init_node('Driver', anonymous=True)
+    rospy.init_node('CollisionAvoider', anonymous=True)
     rospy.Subscriber("scan", LaserScan, observe)
     rospy.spin()
 
