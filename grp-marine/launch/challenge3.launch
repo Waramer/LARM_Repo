@@ -25,9 +25,9 @@
     <node name="Evitement" pkg="grp-marine" type="collisionAvoider.py" output ="screen"></node>
     <node name="Navigateur" pkg="grp-marine" type="navigator.py" output="screen"></node>
 
-    <!-- <node name="BottleOrangeObserver" pkg="grp-marine" type="bottleOrangeObserver.py"></node> -->
-    <!-- <node name="BottleBlackObserver" pkg="grp-marine" type="harr_normal.py"></node> -->
-    <!-- <node name="BottleReporter" pkg="grp-marine" type="bottleReporter.py"></node> --> 
+    <node name="BottleOrangeObserver" pkg="grp-marine" type="bottleOrangeObserver.py"></node>
+    <node name="BottleBlackObserver" pkg="grp-marine" type="harr_normal.py"></node>
+    <node name="BottleReporter" pkg="grp-marine" type="bottleReporter.py"></node> 
 
     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find grp-marine)/config/challenge3.rviz" ></node>
 

@@ -136,21 +136,21 @@ class NavigationPlanner:
         return False
 
 
-# Initialise
-my_start = [130,90]
-my_goal = [325,200]
-map = cv2.imread("map.png")
-height,width=np.shape(map)[0],np.shape(map)[1]
+# # Initialise
+# my_start = [130,90]
+# my_goal = [325,200]
+# map = cv2.imread("map.png")
+# height,width=np.shape(map)[0],np.shape(map)[1]
 
-# Map image treatment
-map2 = cv2.inRange(map,np.array([200,200,200]),np.array([255,255,255]))
-map2 = cv2.erode(map2, None, iterations=1)
-map2 = cv2.medianBlur(map2,7)
+# # Map image treatment
+# map2 = cv2.inRange(map,np.array([200,200,200]),np.array([255,255,255]))
+# map2 = cv2.erode(map2, None, iterations=1)
+# map2 = cv2.medianBlur(map2,7)
 
-# Use NavigationPlanner
-nav = NavigationPlanner()
-nav.goal = Node(my_goal,None)
-nav.start = Node(my_start,None)
-nav.map = map2
-path = nav.aStar(4)
-nav.displayMap()
+# # Use NavigationPlanner
+# nav = NavigationPlanner()
+# nav.goal = Node(my_goal,None)
+# nav.start = Node(my_start,None)
+# nav.map = map2
+# path = nav.aStar(4)
+# nav.displayMap()

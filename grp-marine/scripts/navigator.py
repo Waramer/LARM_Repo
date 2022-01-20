@@ -85,7 +85,7 @@ def updatePlanner():
     mapStart = [ int((pos[0]-map_origin[0])/0.05) , int((pos[1]-map_origin[1])/0.05) ]
     navPlanner.updateStart(mapStart)
 
-    navPlanner.updateMap(map)
+    # navPlanner.updateMap(map)
 
 def findNavCourse():
     print("Searching Navigation Plan")
