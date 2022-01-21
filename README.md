@@ -21,7 +21,7 @@ The file `navplan.py` is the file in which the A* is coded, and has an executabl
 ## How to use
 
 To launch the code of all the project on a turtlebot, run :
-`roslaunch grp-marine challenge3.launch`
+`roslaunch grp-marine challenge3_tbot.launch`
 
 To launch the code in the simualtion, without the vision part, run :
 `roslaunch grp-marine challenge3_simulation.launch`
