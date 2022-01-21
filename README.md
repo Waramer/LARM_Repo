@@ -3,9 +3,6 @@ Delezenne Quentin - Duchiron Benjamin
 
 This repository contains all the work of the group in the course LARM.
 
-# In **master**
-This master branch contains all the work, including the tutorials and the drafts.
-
 # In **challenge3**
 This branch contains the work done to achieve the third challenge.  
 
