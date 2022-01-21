@@ -32,6 +32,12 @@ navPlanner = NavigationPlanner()
 navPlan = []
 
 def quaternion_to_euler(x, y, z, w):
+    """Fonction pour transformer un quaternion en angles Eulériens
+    La fontion prend en entrée : 
+    - 'x' : coordonée x du quaternion
+    - 'y' : coordonée y du quaternion
+    - 'z' : coordonée y du quaternion
+    - 'w' : coordonée z du quaternion"""
     ysqr = y * y
     t0 = +2.0 * (w * x + y * z)
     t1 = +1.0 - 2.0 * (x * x + ysqr)
@@ -46,6 +52,9 @@ def quaternion_to_euler(x, y, z, w):
     return X, Y, Z 
 
 def updateMap(data):
+    """Fonction qui permet de mettre à jour la variable contenant la carte et transforme la carte de Gmapping en un np.array exploitable.  
+    La fontion prend en entrée :
+    - 'data' : topic /map """
     width = data.info.width
     height = data.info.height
     global map_origin
@@ -63,6 +72,9 @@ def updateMap(data):
             map[-1-i][j] = [0,0,0]
 
 def updatePos(data):
+    """Fonction qui permet de mettre à jour la variable contenant la position du robot.  
+    La fontion prend en entrée :
+    - 'data' : topic /odom"""
     global pos
     pos[0]=data.pose.pose.position.x
     pos[1]=data.pose.pose.position.y
@@ -72,23 +84,27 @@ def updatePos(data):
         hdg += 360
 
 def updateGoal(data):
+    """Fonction qui permet de mettre à jour la variable contenant l'objectif du robot.  
+    La fontion prend en entrée :
+    - 'data' : topic /goal"""
     global goal
     goal[0]=data.pose.position.x
     goal[1]=data.pose.position.y
 
-    # findNavCourse()
+    # findNavCourse() # Non implémentation de l'algorithme A*
 
 def updatePlanner():
+    """Fonction qui permet de mettre à jour le système de navigation"""
     mapGoal = [ int((goal[0]-map_origin[0])/0.05) , int((goal[1]-map_origin[1])/0.05) ]
     navPlanner.updateGoal(mapGoal)
 
     mapStart = [ int((pos[0]-map_origin[0])/0.05) , int((pos[1]-map_origin[1])/0.05) ]
     navPlanner.updateStart(mapStart)
 
-    # navPlanner.updateMap(map)
+    navPlanner.updateMap(map)
 
 def findNavCourse():
-    print("Searching Navigation Plan")
+    """Fonction qui lance la recheche de plan de navigation avec l'algorthme A*."""
     updatePlanner()
     navPlanFound = navPlanner.aStar(3)
     if navPlanFound != False :
@@ -98,9 +114,9 @@ def findNavCourse():
             waypoint_x = map_origin[0] + node.pos[0]*0.05
             waypoint_y = map_origin[1] + node.pos[1]*0.05
             navPlan.insert(0,[waypoint_x,waypoint_y])
-        print(navPlan)
 
 def sendNavCommand(data):
+    """Fonction qui gère la cap à prendre par le robot pour atteindre son objectif actuel et transmet la commande calculée ainsi que la distance à l'objectif."""
     toGoal,goal_hdg,goal_rng = [goal[0]-pos[0],goal[1]-pos[1]],hdg,0
 
     if toGoal[0]!=0 and toGoal[1]!=0:

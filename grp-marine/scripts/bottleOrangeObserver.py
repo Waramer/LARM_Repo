@@ -18,6 +18,10 @@ tfListener = 0
 startAnalyse = 0
 
 def rs_depth(data):
+    """Fonction qui met à jour la variable contenant l'image de profondeur.  
+    
+    La fontion prend en entrée :
+    - 'data' : topic /camera/aligned_depth_to_color/image_raw"""
     global cv_depth
     cv_depth = np.array(bridge.imgmsg_to_cv2(data,desired_encoding="passthrough"))
     global startAnalyse
@@ -25,6 +29,10 @@ def rs_depth(data):
         startAnalyse = 1
 
 def rs_color(data):
+    """Fonction qui met à jour la variable contenant l'image en couleurs.  
+
+    La fontion prend en entrée :
+    - 'data' : topic /camera/color/image_raw"""
     global cv_color
     cv_color = np.array(bridge.imgmsg_to_cv2(data,'bgr8'))
     global startAnalyse
@@ -32,6 +40,12 @@ def rs_color(data):
         startAnalyse = 2
 
 def createBottlePose(x,y,z):
+    """Fonction qui crée un object 'PoseStamped' pour une boutielle.  
+
+    La fontion prend en entrée :
+    - 'x' : coordonnée x 
+    - 'y' : coordonnée y 
+    - 'z' : coordonnée z """
     pose = PoseStamped()
     pose.header.frame_id = "base_footprint"
     pose.header.stamp = rospy.Time()
@@ -45,7 +59,7 @@ def createBottlePose(x,y,z):
     return pose
 
 def detect_bottle(data):
-
+    """Fonction qui analyse l'image couleur pour trouver les bouteilles oranges par seuillage HSV. EN détermine la profondeur et envoie la donnée ainsi qu'un aperçu viseul de la détection dans le topic /detect_orange"""
     if startAnalyse != 2:
         return False
 

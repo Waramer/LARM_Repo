@@ -17,6 +17,11 @@ pub = 0
 bottles = []
 
 def createMarker(pos,color,id):
+    """Fonction qui créer un objet Marker qui correspond en ID et en couleur à la boutielle qu'il représente.  
+    
+    La fontion prend en entrée :
+    - 'color' : la couleur du marqueur
+    - 'id' : l'id du marqueur"""
     marker = Marker()
     marker.id = id
     marker.header.frame_id = "map"
@@ -46,18 +51,16 @@ def createMarker(pos,color,id):
 
     pub.publish(marker)
 
-def printBottles():
-    if len(bottles)>0:
-        print("")
-        for bottle in bottles:
-            print(bottle)
-
 def updateMap():
+    """Fonction qui met à jour la position des marqueurs sur la carte."""
     for bottle in bottles:
         createMarker(bottle.pos,bottle.color,bottle.id)
-    printBottles()
 
 def updateOrangeBottles(data):
+    """Fonction qui mets à jour la liste des bouteille orange avec la nouvelle donnée, gère l'ajout de bouteille.  
+
+    La fontion prend en entrée :
+    - 'data' : topic /bottle_orange"""
     global bottles
     uncertainBottlePos = [data.pose.position.x,data.pose.position.y,0.1]
     for bottle in bottles:
@@ -71,6 +74,10 @@ def updateOrangeBottles(data):
     return True
 
 def updateBlackBottles(data):
+    """Fonction qui mets à jour la liste des bouteille noire avec la nouvelle donnée, gère l'ajout de bouteille.  
+
+    La fontion prend en entrée :
+    - 'data' : topic /bottle_black"""
     global bottles
     uncertainBottlePos = [data.pose.position.x,data.pose.position.y,0.1]
     for bottle in bottles:
