@@ -32,7 +32,8 @@ navPlanner = NavigationPlanner()
 navPlan = []
 
 def quaternion_to_euler(x, y, z, w):
-    """Fonction pour transformer un quaternion en angles Eulériens
+    """Fonction pour transformer un quaternion en angles Eulériens.
+
     La fontion prend en entrée : 
     - 'x' : coordonée x du quaternion
     - 'y' : coordonée y du quaternion
@@ -52,7 +53,8 @@ def quaternion_to_euler(x, y, z, w):
     return X, Y, Z 
 
 def updateMap(data):
-    """Fonction qui permet de mettre à jour la variable contenant la carte et transforme la carte de Gmapping en un np.array exploitable.  
+    """Fonction qui permet de mettre à jour la variable contenant la carte et transforme la carte de Gmapping en un np.array exploitable.
+
     La fontion prend en entrée :
     - 'data' : topic /map """
     width = data.info.width
@@ -73,6 +75,7 @@ def updateMap(data):
 
 def updatePos(data):
     """Fonction qui permet de mettre à jour la variable contenant la position du robot.  
+
     La fontion prend en entrée :
     - 'data' : topic /odom"""
     global pos
@@ -85,6 +88,7 @@ def updatePos(data):
 
 def updateGoal(data):
     """Fonction qui permet de mettre à jour la variable contenant l'objectif du robot.  
+    
     La fontion prend en entrée :
     - 'data' : topic /goal"""
     global goal
