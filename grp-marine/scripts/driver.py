@@ -19,6 +19,12 @@ decision = False
 pub = 0
 
 def accel(vel,rate,cmd):
+    """ La fonction détermine l'accélération transmise selon l'importance de la différence entre la nouvelle commande et l'ancienne.
+    
+        La fonction prend en entrée :
+        - 'vel' : commande en cours
+        - 'rate' : coefficient de la rampe 
+        - ' cmd' : nouvelle commande """
     if math.fabs(cmd-vel) < 0.01 :
         return cmd
     else :
@@ -29,6 +35,10 @@ def updatenav(data):
     move_command = data
 
 def updatecas(data):
+    """ La fonction met à jour les commandes et donne la priorité au CAS si la commande n'est pas standard.
+    
+        La fonction prend en entrée :
+        - 'data' : commande du CAS"""
     global decision
     global new_command
     new_command =data
@@ -42,6 +52,7 @@ def updateDist(data):
     dist_goal = data.data
 
 def move(data):
+    """ La fonction donne la priorité au CAS sur la NAV en fonction de la commande reçu"""
     global state
     global move_command
     global lin_rate

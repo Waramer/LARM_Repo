@@ -11,6 +11,10 @@ move_command.linear.x = 0.0
 move_command.angular.z = 0.0
 
 def observe(data):
+    """La fonction convertit la donnée en coordonnées cylindriques.
+
+        La fonction prend en entrée :
+        - 'data' : flux laser"""
     obstacles = []
     angle= data.angle_min
     for aDistance in data.ranges :
@@ -38,12 +42,22 @@ def turn(vel):
     move_command.angular.z = vel
 
 def zone_coll(point,lat,lon):
+    """La fonction évalue la présence de l'object dans l'environnement proche.
+
+        La fonction prend en entrée :
+        - 'point' : coordonnées de l'object
+        - 'lat' : longueur latérale
+        - 'lon' : longueur longitudinale"""
     if -lat<point[1] and point[1]<lat :
         if point[0] > 0.05 and point[2]<lon :
             return True
     return False
 
 def analyse(obstacles):
+    """La fonction quantifie l'environnement proche du robot.
+
+        La fonction prend en entrée :
+        - 'obstacle' : liste des coordonnées des obstacles """
     lat_sit = 0
     min_rng_prox = 1.0
     min_rng_coll = 1.0
@@ -72,6 +86,10 @@ def analyse(obstacles):
     return lat_sit,min_rng_prox,min_rng_coll
 
 def avoid_collision(obstacles):
+    """La fonction prend la décision comportementale à adopter.
+
+        La fonction prend en entrée :
+        - 'obstacles' : liste des coordonnées des obstacles"""
     lat_sit,min_r_p,min_r_c= analyse(obstacles)
 
     if math.fabs(lat_sit) > 1.0 :
