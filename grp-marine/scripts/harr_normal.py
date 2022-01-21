@@ -9,6 +9,7 @@ import math
 import tf
 
 def get_pkg_path():
+    """ Définition des objects """
     rospack = rospkg.RosPack()
     return rospack.get_path('grp-marine')
 my_pkg = get_pkg_path()
@@ -22,6 +23,10 @@ tfListener = 0
 startAnalyse = 0
 
 def rs_color(data):
+    """ Actualise la variable dans le noeud.
+
+        La fonction prend en entrée :
+        - 'data' : flux caméra"""
     global cv_color
     cv_color = np.array(bridge.imgmsg_to_cv2(data,'bgr8'))
     global startAnalyse
@@ -29,6 +34,10 @@ def rs_color(data):
         startAnalyse = 1
 
 def rs_depth(data):
+    """ Actualise la variable dans le noeud.
+    
+        La fonction prend en entrée :
+        - 'data' : flux profondeur"""
     global cv_depth
     cv_depth = np.array(bridge.imgmsg_to_cv2(data,desired_encoding="passthrough"))
     global startAnalyse
@@ -36,6 +45,12 @@ def rs_depth(data):
         startAnalyse = 2
 
 def createBottlePose(x,y,z):
+    """ Création de la donnée de position.
+    
+        La fonction prend en entrée :
+        - 'x' coordonnée en x de l'object
+        - 'y' coordonnée en y de l'object
+        - 'z' coordonnée en z (altitude) de l'object """
     pose = PoseStamped()
     pose.header.frame_id = "base_footprint"
     pose.header.stamp = rospy.Time()
@@ -49,7 +64,7 @@ def createBottlePose(x,y,z):
     return pose
 
 def detect_bottle(data):
-
+    """ Utilisation du classifier de la methode de haar pour la détection , création d'un réctangle autour de l'object et, calcule de la position de l'object."""
     if startAnalyse != 2:
         return False
     
