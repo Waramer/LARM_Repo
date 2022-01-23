@@ -14,3 +14,5 @@ This basic system functions just with simple rebounds.
 - **In challenge2**, there is all the part about the vision of the robot. With two aspects : the first with an HSV code for the orange bottles and the second the haar method for the black bottles.
 
 - **In challenge3**, there is the final part. This branch contains the code to move the robot and to use the vision for the detection of bottles. Moreover, we can find the simulation of the code A*.
+
+**_Context_** :  _The first ten days of this course Benjamin was confined because he was sought (Covid-19), for this reason the beginning was a little complicated. In fact, the part on the robot couldn't be done by Benjamin before January._
